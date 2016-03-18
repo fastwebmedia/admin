@@ -16,6 +16,7 @@ class ModelConfiguration
 	protected $edit;
 	protected $delete = true;
 	protected $restore = true;
+	protected $roles;
 
 	function __construct($class)
 	{

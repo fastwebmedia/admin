@@ -1,3 +1,4 @@
+@if(auth()->user()->is($roles))
 <li {!! (count($items) > 0) ? 'class="treeview"' : '' !!}>
 	<a href="{{ $url }}">
 		<i class="fa fa-fw {{ $icon }}"></i> {{ $label }}
@@ -13,3 +14,4 @@
 		</ul>
 	@endif
 </li>
+@endif

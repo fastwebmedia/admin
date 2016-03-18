@@ -48,6 +48,12 @@ class MenuItem implements Renderable
 	protected $level;
 
 	/**
+	 * Pipe Delimiter Allowed Auth Roles
+	 * @var
+	 */
+	protected $roles;
+
+	/**
 	 * @param string|null $modelClass
 	 */
 	function __construct($modelClass = null)
@@ -175,6 +181,20 @@ class MenuItem implements Renderable
 	}
 
 	/**
+	 * @param array $roles
+	 * @return $this
+	 */
+	public function roles($roles = null)
+	{
+		if (is_null($roles))
+		{
+			return $this->roles;
+		}
+		$this->roles = $roles;
+		return $this;
+	}
+
+	/**
 	 * @return View
 	 */
 	public function render()
@@ -185,6 +205,7 @@ class MenuItem implements Renderable
 			'url'   => $this->url(),
 			'level' => $this->level(),
 			'items' => $this->items(),
+			'roles' => $this->roles(),
 		];
 		return view(AdminTemplate::view('_partials.menu_item'), $params);
 	}
