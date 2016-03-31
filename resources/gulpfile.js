@@ -13,7 +13,7 @@ var flatten = require('gulp-flatten');
 var less = require('gulp-less');
 var notify = require('gulp-notify');
 var autoprefixer = require('gulp-autoprefixer');
-var urlAdjuster = require('gulp-css-url-adjuster');
+var replace = require('gulp-replace');
 
 // Paths
 var dest = '../public/default/';
@@ -68,10 +68,9 @@ gulp.task('fwm:vendor_css', function () {
 	return gulp.src(vendorCSS)
 		.pipe(plumber(onError))
 		.pipe(filter('**/*.css'))
-		.pipe(urlAdjuster({
-			prepend: '../images/'
-		}))
 		.pipe(minifycss())
+        .pipe(replace('http://fonts.gstatic.com', '//fonts.gstatic.com'))
+        .pipe(replace(/url\(\s*["']?(?:.*[/\\])?(([^/\\]+?).(png|jpg|gif))["']?\s*\)/g, "url('../images/$1')"))
 		.pipe(concat('vendor.css'))
 		.pipe(gulp.dest(dest + 'css'))
 		.pipe(notify('Minified Vendor CSS created.'));
@@ -94,6 +93,13 @@ gulp.task('fwm:vendor_fonts', function () {
 		.pipe(plumber(onError))
 		.pipe(filter(['**/*.eot','**/*.otf','**/*.svg','**/*.ttf','**/*.woff', '**/*.woff2']))
 		.pipe(gulp.dest(dest + 'fonts'));
+});
+
+gulp.task('fwm:vendor_images', function () {
+    return gulp.src(bowerFiles({debugging:false}))
+        .pipe(plumber(onError))
+        .pipe(filter(['**/*.jpg','**/*.gif','**/*.png']))
+        .pipe(gulp.dest(dest + 'images'));
 });
 
 // Copy vendor plugins
@@ -141,6 +147,6 @@ var onError = function (err) {
 
 
 // Tasks
-gulp.task('vendor', ['fwm:vendor_css', 'fwm:vendor_js', 'fwm:vendor_fonts', 'fwm:vendor_plugins']);
+gulp.task('vendor', ['fwm:vendor_css', 'fwm:vendor_js', 'fwm:vendor_fonts', 'fwm:vendor_images', 'fwm:vendor_plugins']);
 gulp.task('app', ['fwm:compile_less', 'fwm:compile_js']);
 gulp.task('default', ['vendor', 'app']);
