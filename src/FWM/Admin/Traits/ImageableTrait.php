@@ -23,12 +23,15 @@ trait ImageableTrait
      * @return bool
      */
     public function featuredImage()
-    {
-        if ( isset($this->images[0]) && $this->images[0]->image_type == "featured") {
-            return $this->images[0];
-        }
-        return false;
-    }
+	{
+	  if ( isset($this->images[0]) ) {
+	    $featured = array_where($this->images, function ($key, $image) {
+	      return $image['image_type'] == "featured";
+	    });
+	    return current($featured);
+	  }
+	  return false;
+	}
 
     /**
      * Returns featured image from DB
